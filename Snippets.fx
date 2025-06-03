@@ -1,37 +1,52 @@
 
--- Carregar dados na inicialização do aplicativo
+// Carregar dados na inicialização do aplicativo
 ClearCollect(MinhaColecao, Filter(MicrosoftLists, Status = "Ativo"))
 
--- Atualizar a coleção apenas quando necessário
+// Atualizar a coleção apenas quando necessário
 ClearCollect(MinhaColecao, MicrosoftLists)
 
--- Usar variáveis para armazenar pequenos conjuntos de dados
+// Usar variáveis para armazenar pequenos conjuntos de dados
 Set(UsuarioAtual, LookUp(MicrosoftLists, Email = User().Email))
 
--- Atualizar um registro
+// Atualizar um registro
 Patch(MicrosoftLists, LookUp(MicrosoftLists, ID = 1), {Status: "Concluído"})
 
--- Criar um botão para navegar entre telas
+// Criar um botão para navegar entre telas
 Navigate(TelaDetalhes, ScreenTransition.Fade)
 
--- Criar uma variável de contexto
+// Criar uma variável de contexto
 UpdateContext({Mensagem: "Bem-vindo ao app!"})
 
--- Criar uma variável global
+// Criar uma variável global
 Set(UsuarioAtual, "Francisco")
 
--- Remover um registro
+// Remover um registro
 Remove(MicrosoftLists, LookUp(MicrosoftLists, ID = 10))
 
--- Criar um alerta de confirmação
+// Criar um alerta de confirmação
 Notify("Operação concluída com sucesso!", NotificationType.Success)
 
--- Validar um campo obrigatório
+// Validar um campo obrigatório
 If(IsBlank(TextInput1.Text), Notify("Preencha o campo!", NotificationType.Error))
 
--- Atualizar vários registros de uma vez
+// Atualizar vários registros de uma vez
 ForAll(MinhaColecao, Patch(MicrosoftLists, LookUp(MicrosoftLists, ID = ID), {Status: "Concluído"}))
 
--- Criar um campo de pesquisa dinâmica
+// Criar um campo de pesquisa dinâmica
 Search(MicrosoftLists, TextInput1.Text, "Nome")
 
+// Criar mascara de texto
+onChange:
+Set(varMoeda;Text(Value(TextInput1.Text), "R$#.##0,00"))
+
+Defaults:
+varMoeda
+
+onChange:
+Set(varCel; 
+"(" & 
+Text(Mid(TextInput1.Text,1,1)) & 
+Text(Mid(TextInput1.Text,2,1)) & 
+Text(Mid(TextInput1.Text,3)) &
+"-" & 
+Text(Mid(TextInput1.Text,7,4)))
