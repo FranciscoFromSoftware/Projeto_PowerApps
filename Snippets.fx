@@ -50,3 +50,28 @@ Text(Mid(TextInput1.Text,2,1)) &
 Text(Mid(TextInput1.Text,3)) &
 "-" & 
 Text(Mid(TextInput1.Text,7,4)))
+
+
+// Coleção com mais de 2000 itens
+ClearCollect(colRegistro;
+    Filter(Tabela_Clientes; ID_Espelho>=1)
+);;
+
+UpdateContext(maiorIDespelho;
+    Max(colRegistro;ID_Espelho)
+);
+
+// Adicionando novo registro
+Patch(Tabela_Clientes;
+    Defaults(Tabela_Clientes);
+    {   
+        ID: Max(Tabela_Clientes, ID) + 1;
+        ID_Espelho: maiorIDespelho + 1;
+        Nome: TextInput1.Text;
+        Email: TextInput2.Text;
+        Telefone: TextInput3.Text
+    }
+);
+
+// Join de tabelas com Patch
+Patch(Tabela_Clientes,
