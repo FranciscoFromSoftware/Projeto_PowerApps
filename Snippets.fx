@@ -11,6 +11,12 @@ Set(UsuarioAtual, LookUp(MicrosoftLists, Email = User().Email))
 // Atualizar um registro
 Patch(MicrosoftLists, LookUp(MicrosoftLists, ID = 1), {Status: "Concluído"})
 
+Patch(Sistema; Defaults(Sistema); 
+{
+    Usuario: Concat(colecaoRegistros; Nome;
+    
+})
+
 // Criar um botão para navegar entre telas
 Navigate(TelaDetalhes, ScreenTransition.Fade)
 
@@ -71,7 +77,23 @@ Patch(Tabela_Clientes;
         Email: TextInput2.Text;
         Telefone: TextInput3.Text
     }
-);
+);;
 
-// Join de tabelas com Patch
-Patch(Tabela_Clientes,
+Clear(Minha_Colecao);;
+With(
+        {
+          NumSequence: RoundUp(First(SortByColumns(Minha_Lista;"ID";SortOrder.Descending)).ID / 2000; 0)
+        };
+    ForAll(
+        Sequence(NumSequence);
+        With(
+            {
+                MinID: 2000 * (Value - 1) + 1;
+                MaxID: 2000 * Value
+            };
+        Collect(
+            Minha_Colecao,
+            Filter(Minha_Lista; ID_Espelho >= MinID && ID_Espelho <= MaxID)
+        )
+    )
+)
